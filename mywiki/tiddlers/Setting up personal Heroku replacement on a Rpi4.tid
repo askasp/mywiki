@@ -1,0 +1,114 @@
+created: 20211107172802133
+creator: ask
+modified: 20211107214307345
+modifier: ask
+title: Setting up personal Heroku replacement on a Rpi4
+type: text/vnd.tiddlywiki
+
+
+This post explains how I run a my personal projects on a Heroku like Paas on a rpi4.  
+
+"Mom, my i have a server?"
+
+"No, we have servers at home"
+
+The server at home
+[img[server.jpg]]
+
+
+
+!!! Why?
+Heroku gets expensive for personal use when you have many small projects. I had a VM on Digital ocean and the paas service work perfectly there as well. However, my Rpi4 costs 100usd and has 8gb RAM. To get that RAM on DO you need to pay 48USD a month. To be fair, the DO will have a better CPU though, but its way cooler to run it at home. 
+
+[img[caprovermenu.png]]
+The Capropver Paas interface
+
+[img[netdata.png]]
+Included one-click-deploy netdata monitoring
+
+
+!! Burning the SD card and booting the Rpi
+
+On your laptop download the Ubuntu Server image from  [[here | https://ubuntu.com/download/raspberry-pi]].
+Raspian will probably work fine as well.
+
+You will get a file called ish ``"ubuntu---.img.xz" .xz`` is just a compression and can be made into a  normal image file by doing ``unxz filename.img.xz``.
+
+Open a terminal and type ``lsblk``.  Then insert the sd card and run ``lsblk`` again. The new device on the list is the sd card. Typically ``sdb``.
+Burn the image by 
+
+```
+sudo dd if=ubuntuimage.img of=/dev/db bs=4M status=progress
+```
+Wait until it's done. Pop it into you rpi4, connect a screen. mouse, keyboard, ethernet cable, and connect the power.
+Login with the default user ``ubuntu`` with pw ``ubuntu`` then ru n
+
+```
+sudo apt update
+sudo apt upgrade
+```
+
+!! Remote connecting to the pi
+On the Pi: install and activate an ssh server
+
+```
+sudo apt install openshh-server
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
+```
+Head over to your favorite domain shop provider (that has a DNS api) and buy a domain. I use [[https://godaddy.com]]
+
+
+Now, the problem with self hosting is that your IP is dynamic, meaning that it may change at any moment. To circumvent this we make a script that update the DNS record to our IP at certain intervals. Naturally, this limits the SLA somewhat, but if you have an ethered connection the IP does not change often.
+
+
+Here is the script for godaddy
+
+```
+mydomain="akselerasjon.no"
+myhostname="*"
+gdapikey="apikey:apisecret"
+logdest="local7.info"
+
+myip=`curl -s "https://api.ipify.org"`
+dnsdata=`curl -s -X GET -H "Authorization: sso-key ${gdapikey}" "https://api.godaddy.com/v1/domains/${mydomain}/records/A/${myhostname}"`
+gdip=`echo $dnsdata | cut -d ',' -f 1 | tr -d '"' | cut -d ":" -f 2`
+echo "`date '+%Y-%m-%d %H:%M:%S'` - Current External IP is $myip, GoDaddy DNS IP is $gdip"
+
+if [ "$gdip" != "$myip" -a "$myip" != "" ]; then
+  echo "IP has changed!! Updating on GoDaddy"
+  curl -s -X PUT "https://api.godaddy.com/v1/domains/${mydomain}/records/A/${myhostname}" -H "Authorization: sso-key ${gdapikey}" -H "Content-Type: application/json" -d "[{\"data\": \"${myip}\"}]"
+  logger -p $logdest "Changed IP on ${hostname}.${mydomain} from ${gdip} to ${myip}"
+fi
+
+```
+This updates the  DNS record to the current ip everytime it is run. To run it on a schedule open a terminal and type  ``crontab -e``. In the file enter
+
+```
+0 * * * * /path/to/script.sh
+@reboot /path/to/script.sh
+```
+This will update the dns record every hour, and on every reboot
+
+Open a terminal on your laptop and connect by ``ubuntu@anything.yourdomain``.  If you connect you can detach the pi from all IO except the ethernet cable as we will control it from the laptop from  now on.
+
+
+!! Setting up Caprover
+Caprover is a open source Paas with a thriving community. Check out their home page here [[https://caprover.com/]]
+
+It's fairly easy to set up. Start by installing docker. 
+
+```
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker [user_name]
+sudo systemctl enable docker
+```
+Reboot to make the user role take effect.
+
+To install caprover follow this guide 
+https://caprover.com/docs/get-started.html  as it is sure to be more updated than this.
+
+
+This blog is running on tiddlyiwki, which is a oneclick-app

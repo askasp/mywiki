@@ -1,0 +1,70 @@
+created: 20211107122051288
+creator: ask
+modified: 20211108103013748
+modifier: ask
+tags: 
+title: Aksel Stadler Kjetsaa
+type: text/vnd.tiddlywiki
+
+
+I'm a norwegian software developer with a MSc in mathematics/robotics. 
+I graduated in 2017 and my thesis was to develop real-time software to autonomously track underwater cables with an underwater robot. Link to thesis
+In work life I started in the "defence" sector, and moved on to working with payment infrastructure in a norwegian fintech called Vipps.
+ Currently, I'm working at Dignio , a startup within remote care. So the ethical aspect of my work is strictly increasing!
+My greatest achievements are taking 23 consecutive pull ups, and running a 5km on 17.16
+
+! Projects
+
+!!  [[Setting up personal Heroku replacement on a Rpi4]]
+"Mom, my i have a server?"
+
+"No, we have servers at home"
+
+The server at home
+[img[server.jpg]]
+
+
+Why pay 5$/month per app when it's so fun to make stuff 
+
+
+!! [[Live chat with CQRS]]
+
+[img  [cqrs.jpg]]
+
+How make a chatroom app using phoenix liveview and the CQRS pattern
+
+[[Demo|https:/livechat.stadler.no/]]
+
+[[Repo|https://github.com/askasp/live_tea]]
+
+
+!! [[Led Thermometer for Africa Burn]]
+
+[img [A6VTrcJ.png]]
+
+In Africa burn 2019 we gifted a sauna to the community. We installed a 3m tall LED thermometer so bypassers could see the current sauna temperature. Here is a walkthrough of the code and how I wired it all up
+
+[[Repo|https://github.com/askasp/led-thermometer]]
+
+
+!! [[Nixops & Liveview]]
+
+[img [nixos.png]]
+
+Phoenix liveview is the new go-to framework for building SPAs in much the same way that 2021 is the year of the desktop (fingers crossed). Its killer feature is server-side-rendered dynamic webpages (it is as great as it sounds). Nixops is for people that are too cool for kubernetes
+
+
+!! [[Koronavenn | https://kronavenn.web.app/]]
+
+[img  [telefon-2d71243cfb47f861dc57f7c48d210b81.svg]]
+
+Koronavenn A service made during the 2020 pandemic. The purpose was to connect quaranteened people so everyone had a call buddy or a 'corona-friend' (which is the title in Norwegian)
+
+!! [[Live Markdown]]
+
+[img [markdow-e80c8023fd727e099f5846faf5435eac.jpg]]
+
+
+Markdown to html service for liveview applications. Gets the markdown from an url, parses it, and stores the html inmemory for faster rendering
+
+
