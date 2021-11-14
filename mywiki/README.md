@@ -1,3 +1,0 @@
-# mytiddlywiki
-# mytiddlywiki
-# mywiki
